@@ -4,7 +4,19 @@ import { Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import api from '../../services/api';
-import { Container, Form, Input, SubmitButton } from './styles';
+import {
+  Container,
+  Form,
+  Input,
+  SubmitButton,
+  List,
+  User,
+  Avatar,
+  Name,
+  Bio,
+  ProfileButton,
+  ProfileButtonText,
+} from './styles';
 
 export default class Main extends Component {
   state = {
@@ -16,9 +28,9 @@ export default class Main extends Component {
     const { users, newUser } = this.state;
 
     const response = await api.get(`/users/${newUser}`);
-    const { name, login, bio, avatar } = response.data;
+    const { name, login, bio, avatar_url } = response.data;
 
-    const data = { name, login, bio, avatar };
+    const data = { name, login, bio, avatar: avatar_url };
 
     this.setState({
       users: [...users, data],
@@ -47,6 +59,21 @@ export default class Main extends Component {
             <Icon name="add" size={20} color="#FFF" />
           </SubmitButton>
         </Form>
+
+        <List
+          data={users}
+          keyExtractor={user => user.login}
+          renderItem={({ item }) => (
+            <User>
+              <Avatar source={{ uri: item.avatar }} />
+              <Name>{item.name}</Name>
+              <Bio>{item.bio}</Bio>
+              <ProfileButton>
+                <ProfileButtonText>Ver Perfil</ProfileButtonText>
+              </ProfileButton>
+            </User>
+          )}
+        />
       </Container>
     );
   }
